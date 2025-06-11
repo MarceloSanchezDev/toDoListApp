@@ -1,75 +1,95 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { JSX, useState } from 'react';
+import { Button, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import AuthForm from '../components/AuthForm/AuthForm';
+import LoginForm from '../components/LoginForm/LoginForm';
+import RegisterForm from '../components/RegisterForm/RegisterForm';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+export default function HomeScreen(): JSX.Element {
+  const [showLogin, setShowLogin] = useState<boolean>(false)
+  const [showRegister, setRegister] = useState<boolean>(false)
+
+  const handleShowLogin = (): void => {
+    setShowLogin(true);
+    setRegister(false);
+  }
+  const handleShowRegister = (): void => {
+    setRegister(true);
+    setShowLogin(false);
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView style={{backgroundColor: '#2e2a2a' }} contentContainerStyle={styles.contentContainerStyles}>
+      {!showLogin && !showRegister && (
+        <>
+          <View>
+            <Text style={styles.textTitleStyle}>Bienvenido a Estadisticas de Baloncesto 🏀⛹️‍♂️</Text>
+            <Text style={styles.textStyle}>Esta aplicacion te permite visualizar estadisticas de baloncesto, enfocado en tiros de dos y tres puntos.</Text>
+            <Text style={styles.textStyle}>Inicia Sesion o Registrate!</Text>
+          </View>
+          <View style={styles.buttonsAuthContainer}>
+            <AuthForm handleShowLogin = {handleShowLogin} handleShowRegister={handleShowRegister}/>
+          </View>
+        </>
+      )}
+      {showLogin && (
+        <View>
+          <LoginForm ></LoginForm>
+          <Button title='Volver' onPress={()=>{
+            setShowLogin(false)
+            setRegister(false)
+            }}></Button>
+        </View>
+      )}
+      {showRegister && (
+        <View>
+          <RegisterForm></RegisterForm>
+          <Button title='Volver' onPress={()=>{
+            setShowLogin(false)
+            setRegister(false)
+            }}></Button>
+        </View>
+      )}
+    </ScrollView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  contentContainerStyles:{
+    height: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+    marginTop: Platform.OS === 'android' ? 24 : 0,
+    paddingTop: Platform.OS === 'android' ? 24 : 0,
+    paddingHorizontal: 16,
+    backgroundColor: 'transparent',
+    
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  buttonsAuthContainer:{
+    flexDirection: 'row',
+    height: '20%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    gap: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  textStyle: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 10,
   },
+   textTitleStyle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  buttonBack :{
+    width: 250,
+  }
+
 });
